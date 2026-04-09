@@ -2,4 +2,4 @@
 VAULT_ADDR={{ .Data.data.vault_addr }}
 VAULT_ROLE={{ .Data.data.role }}
 {{- end }}
-VAULT_AGENT_ADDR=http://vault-agent:8007
+VAULT_AGENT_ADDR=http://vault-proxy:8007

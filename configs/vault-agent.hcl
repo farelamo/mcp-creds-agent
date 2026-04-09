@@ -22,15 +22,8 @@ auto_auth {
   }
 }
 
-## Proxy: MCP servers can hit http://vault-agent:8007 instead of Vault directly
-api_proxy {
-  use_auto_auth_token = true
-}
-
-listener "tcp" {
-  address     = "0.0.0.0:8007"
-  tls_disable = true
-}
+## Proxy functionality moved to `vault proxy` subcommand.
+## See vault-proxy.hcl for the proxy config.
 
 ## ── Jenkins MCP ──────────────────────────────────────────────────────────────
 template {
