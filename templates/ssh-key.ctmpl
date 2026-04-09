@@ -1,0 +1,3 @@
+{{- with secret "mcp/data/ssh-key" -}}
+{{ .Data.data.private_key }}
+{{- end }}

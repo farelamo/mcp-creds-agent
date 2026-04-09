@@ -1,0 +1,5 @@
+{{- with secret "mcp/data/jenkins" -}}
+JENKINS_URL={{ .Data.data.url }}
+JENKINS_USER={{ .Data.data.username }}
+JENKINS_TOKEN={{ .Data.data.api_token }}
+{{- end }}

@@ -1,0 +1,6 @@
+{{- with secret "mcp/data/ssh" -}}
+SSH_HOST={{ .Data.data.host }}
+SSH_USER={{ .Data.data.username }}
+SSH_PORT={{ if .Data.data.port }}{{ .Data.data.port }}{{ else }}22{{ end }}
+SSH_KEY_PATH=/run/secrets/ssh/id_ed25519
+{{- end }}

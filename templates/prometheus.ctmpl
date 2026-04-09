@@ -1,0 +1,3 @@
+{{- with secret "mcp/data/prometheus" -}}
+PROMETHEUS_URL={{ .Data.data.url }}
+{{- end }}

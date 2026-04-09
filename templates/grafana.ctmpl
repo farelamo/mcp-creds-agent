@@ -1,0 +1,4 @@
+{{- with secret "mcp/data/grafana" -}}
+GRAFANA_URL={{ .Data.data.url }}
+GRAFANA_TOKEN={{ .Data.data.token }}
+{{- end }}

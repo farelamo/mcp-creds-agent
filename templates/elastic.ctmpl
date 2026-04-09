@@ -1,0 +1,4 @@
+{{- with secret "mcp/data/elastic" -}}
+ELASTIC_URL={{ .Data.data.url }}
+ELASTIC_API_KEY={{ .Data.data.api_key }}
+{{- end }}
