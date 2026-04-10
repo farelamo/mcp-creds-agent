@@ -9,6 +9,7 @@
 volumes:
   # tmpfs: secrets exist only in RAM, gone on container stop
   secrets:
+    name: secrets
     driver: local
     driver_opts:
       type:   tmpfs
