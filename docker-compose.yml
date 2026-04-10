@@ -1,0 +1,119 @@
+## docker-compose.yml — MCP Server + Vault Agent sidecar
+##
+## Key design:
+##   - secrets volume is tmpfs (RAM only, never written to disk)
+##   - MCP server depends_on vault-agent health check
+##   - MCP server mounts secrets READ-ONLY
+##   - No credentials in environment variables
+
+volumes:
+  # tmpfs: secrets exist only in RAM, gone on container stop
+  secrets:
+    driver: local
+    driver_opts:
+      type:   tmpfs
+      device: tmpfs
+      o:      "size=32m,uid=1000,gid=1000,mode=0700"
+
+  vault-run:
+    driver: local
+    driver_opts:
+      type:   tmpfs
+      device: tmpfs
+      o:      "size=8m,uid=1000"
+
+services:
+
+  # ── Vault Agent ─────────────────────────────────────────────────────────────
+  # Authenticates to Vault via AppRole, renders .env files into /run/secrets,
+  # sends SIGHUP to MCP container when secrets change.
+  vault-agent:
+    image: hashicorp/vault:1.18.4
+    command: agent -config=/etc/vault-agent/vault-agent.hcl
+    restart: unless-stopped
+    user: "1000:1000"
+    cap_add:
+      - IPC_LOCK
+    env_file: ./.env
+
+    volumes:
+      - ./configs/vault-agent.hcl:/etc/vault-agent/vault-agent.hcl:ro
+      - ./templates:/etc/vault-agent/templates:ro
+      - secrets:/run/secrets
+      - vault-run:/run/vault
+      - ./agent/role-id:/run/vault/role-id:ro
+      - ./agent/secret-id:/run/vault/secret-id:ro
+
+    environment:
+      VAULT_ADDR: ${VAULT_ADDR}
+      VAULT_LOG_LEVEL: warn
+      SKIP_SETCAP: "true"
+
+    healthcheck:
+      test: ["CMD", "test", "-f", "/run/vault/agent-token"]
+      interval: 5s
+      timeout:  3s
+      retries:  10
+      start_period: 10s
+
+  # ── Vault Proxy ─────────────────────────────────────────────────────────────
+  # Replaces deprecated api_proxy in Vault Agent.
+  # MCP servers hit http://vault-proxy:8007 instead of Vault directly.
+  vault-proxy:
+    image: hashicorp/vault:1.18.4
+    command: proxy -config=/etc/vault-proxy/vault-proxy.hcl
+    restart: unless-stopped
+    user: "1000:1000"
+    cap_add:
+      - IPC_LOCK
+    env_file: ./.env
+
+    depends_on:
+      vault-agent:
+        condition: service_healthy
+
+    volumes:
+      - ./configs/vault-proxy.hcl:/etc/vault-proxy/vault-proxy.hcl:ro
+      - vault-run:/run/vault
+      - ./agent/role-id:/run/vault/role-id:ro
+      - ./agent/secret-id:/run/vault/secret-id:ro
+
+    environment:
+      VAULT_ADDR: ${VAULT_ADDR}
+      VAULT_LOG_LEVEL: warn
+      SKIP_SETCAP: "true"
+
+    healthcheck:
+      test: ["CMD", "vault", "status", "-address=http://127.0.0.1:8007"]
+      interval: 5s
+      timeout:  3s
+      retries:  10
+      start_period: 10s
+
+  # ── MCP Server (Example) ──────────────────────────────────────────────────────────────
+  # mcp-server:
+  #   build:
+  #     context: .
+  #     dockerfile: mcp-server/Dockerfile
+  #   container_name: mcp-server
+  #   restart: unless-stopped
+
+  #   depends_on:
+  #     vault-agent:
+  #       condition: service_healthy
+  #     vault-proxy:
+  #       condition: service_healthy
+
+  #   ports:
+  #     - "8080:8080"
+
+  #   volumes:
+  #     - secrets:/run/secrets:ro   # read-only — MCP never writes secrets
+
+  #   environment:
+  #     - MCP_TRANSPORT=sse
+  #     - MCP_SECRETS_DIR=/run/secrets
+  #     # No credentials here — all from /run/secrets/<service>/.env
+
+  #   stdin_open: true
+  #   tty: true
