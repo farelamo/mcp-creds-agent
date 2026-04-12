@@ -1,0 +1,3 @@
+{{- with secret "mcp/data/github" -}}
+GITHUB_TOKEN={{ .Data.data.token }}
+{{- end }}

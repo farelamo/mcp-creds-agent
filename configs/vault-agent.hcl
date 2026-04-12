@@ -98,4 +98,13 @@ template {
   error_on_missing_key = true
 }
 
+## ── GitHub MCP ────────────────────────────────────────────────────────────
+template {
+  source      = "/etc/vault-agent/templates/github.ctmpl"
+  destination = "/run/secrets/github/.env"
+  perms       = "0600"
+  command     = "docker kill --signal=SIGHUP mcp-server 2>/dev/null || true"
+  error_on_missing_key = true
+}
+
 pid_file = "/run/vault/agent.pid"

@@ -1,6 +1,8 @@
 {{- with secret "mcp/data/ssh" -}}
-SSH_HOST={{ .Data.data.host }}
-SSH_USER={{ .Data.data.username }}
+SSH_USERNAME={{ .Data.data.username }}
 SSH_PORT={{ .Data.data.port }}
 SSH_KEY_PATH=/run/secrets/ssh/id_ed25519
+{{- range $key, $value := .Data.data.hosts }}
+SSH_HOST_{{ $key | toUpper }}={{ $value }}
+{{- end }}
 {{- end }}
