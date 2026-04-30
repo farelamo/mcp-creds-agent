@@ -1,0 +1,8 @@
+{{- range secrets "mcp/metadata/pritunl/" -}}
+{{- $env := . -}}
+{{- with secret (printf "mcp/data/pritunl/%s" $env) -}}
+PRITUNL_BASE_URL_{{ $env | toUpper }}={{ .Data.data.url }}
+PRITUNL_USERNAME_{{ $env | toUpper }}={{ .Data.data.username }}
+PRITUNL_PASSWORD_{{ $env | toUpper }}={{ .Data.data.password }}
+{{ end -}}
+{{- end }}
