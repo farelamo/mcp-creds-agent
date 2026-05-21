@@ -1,0 +1,10 @@
+{{- with secret "mcp/data/migrator" -}}
+PG_HOST={{ .Data.data.pg_host }}
+PG_PORT={{ .Data.data.pg_port }}
+PG_USER={{ .Data.data.pg_user }}
+PG_PASSWORD={{ .Data.data.pg_password }}
+PG_DATABASE={{ .Data.data.pg_database }}
+PG_SCHEMA={{ .Data.data.pg_schema }}
+MAX_WORKERS={{ .Data.data.max_workers }}
+MAX_PG_CONNECTIONS={{ .Data.data.max_pg_connections }}
+{{- end }}

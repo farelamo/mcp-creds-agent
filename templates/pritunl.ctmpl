@@ -4,5 +4,8 @@
 PRITUNL_BASE_URL_{{ $env | toUpper }}={{ .Data.data.url }}
 PRITUNL_USERNAME_{{ $env | toUpper }}={{ .Data.data.username }}
 PRITUNL_PASSWORD_{{ $env | toUpper }}={{ .Data.data.password }}
+{{- if .Data.data.insecure }}
+PRITUNL_INSECURE_{{ $env | toUpper }}={{ .Data.data.insecure }}
+{{- end }}
 {{ end -}}
 {{- end }}

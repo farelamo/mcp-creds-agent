@@ -1,0 +1,9 @@
+{{- with secret "mcp/data/inprivy" -}}
+INPRIVY_TOKEN={{ .Data.data.token }}
+{{- if .Data.data.base_url }}
+INPRIVY_BASE_URL={{ .Data.data.base_url }}
+{{- end }}
+{{- if .Data.data.folder_name }}
+INPRIVY_FOLDER_NAME={{ .Data.data.folder_name }}
+{{- end }}
+{{- end }}

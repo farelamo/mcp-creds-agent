@@ -40,6 +40,13 @@ vault kv put secret/mcp/ssh-key  private_key="$(cat "$SSH_KEY_FILE")"
 echo "  SSH key stored in Vault — safe to remove the file from disk now"
 
 echo ""
+echo "→ Seeding InPrivy secrets..."
+read -rsp "  InPrivy API token: " INPRIVY_TOKEN; echo
+read -rp  "  InPrivy base URL (leave blank for https://inprivy.io): " INPRIVY_BASE_URL
+INPRIVY_BASE_URL="${INPRIVY_BASE_URL:-https://inprivy.io}"
+vault kv put secret/mcp/inprivy token="$INPRIVY_TOKEN" base_url="$INPRIVY_BASE_URL"
+
+echo ""
 echo "══════════════════════════════════════════"
 echo "  Done. Next steps:"
 echo "  1. Add ./agent/ to .gitignore"

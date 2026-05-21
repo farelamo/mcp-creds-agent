@@ -1,0 +1,9 @@
+{{- with secret "mcp/data/smtp" -}}
+SMTP_HOST={{ .Data.data.host }}
+SMTP_PORT={{ .Data.data.port }}
+SMTP_USER={{ .Data.data.user }}
+SMTP_PASS={{ .Data.data.pass }}
+{{- if .Data.data.from }}
+SMTP_FROM={{ .Data.data.from }}
+{{- end }}
+{{- end }}

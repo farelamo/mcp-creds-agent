@@ -107,4 +107,40 @@ template {
   error_on_missing_key = true
 }
 
+## ── Pritunl MCP ───────────────────────────────────────────────────────────
+template {
+  source      = "/etc/vault-agent/templates/pritunl.ctmpl"
+  destination = "/run/secrets/pritunl/.env"
+  perms       = "0600"
+  command     = "docker kill --signal=SIGHUP mcp-server 2>/dev/null || true"
+  error_on_missing_key = true
+}
+
+## ── InPrivy MCP ───────────────────────────────────────────────────────────
+template {
+  source      = "/etc/vault-agent/templates/inprivy.ctmpl"
+  destination = "/run/secrets/inprivy/.env"
+  perms       = "0600"
+  command     = "docker kill --signal=SIGHUP mcp-server 2>/dev/null || true"
+  error_on_missing_key = true
+}
+
+## ── SMTP ──────────────────────────────────────────────────────────────────
+template {
+  source      = "/etc/vault-agent/templates/smtp.ctmpl"
+  destination = "/run/secrets/smtp/.env"
+  perms       = "0600"
+  command     = "docker kill --signal=SIGHUP mcp-server 2>/dev/null || true"
+  error_on_missing_key = true
+}
+
+## ── Migrator MCP ──────────────────────────────────────────────────────────
+template {
+  source      = "/etc/vault-agent/templates/migrator.ctmpl"
+  destination = "/run/secrets/migrator/.env"
+  perms       = "0600"
+  command     = "docker kill --signal=SIGHUP mcp-server 2>/dev/null || true"
+  error_on_missing_key = true
+}
+
 pid_file = "/run/vault/agent.pid"

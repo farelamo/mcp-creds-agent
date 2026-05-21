@@ -9,6 +9,9 @@ path "mcp/data/custom"     { capabilities = ["read"] }
 path "mcp/data/grafana"    { capabilities = ["read"] }
 path "mcp/data/elastic"    { capabilities = ["read"] }
 path "mcp/data/prometheus" { capabilities = ["read"] }
+path "mcp/metadata/pritunl/" { capabilities = ["list"] }
+path "mcp/data/pritunl/*"    { capabilities = ["read"] }
+path "mcp/data/inprivy"       { capabilities = ["read"] }
 
 path "auth/token/renew-self"      { capabilities = ["update"] }
 path "auth/token/lookup-self"     { capabilities = ["read"] }
